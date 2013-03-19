@@ -21,10 +21,12 @@ class Minesweeper
       puts "Here is the minefield:\n"
       @display_board.each{|row| p row}
       puts ''
+
       puts "Would you like to dig or flag? 1-Dig, 2-Flag, 3-Save, 4-Quit"
       command = gets.chomp.to_i
       case command
         when 3 then save_game
+          # REV: you could do `when 4 return forfeit = "quit" `
         when 4
           forfeit = "quit"
           return
@@ -66,6 +68,16 @@ class Minesweeper
       row = []
       9.times {row << "_"}
       9.times {board << row.dup}
+      # REV: this may reassign 'm' to a spot that already has 'm'
+      # to guarantee 10 mines placed, do something like:
+      # mines = 10
+      # until mines == 0
+      #   placement = board[rand(16)][rand(16)]
+      #   if placement != 'm'
+      #     board[rand(16)][rand(16)] = 'm'
+      #     mines -= 1
+      #   end
+      # end
       10.times {board[rand(9)][rand(9)] = "m"}
     elsif size == :large
       16.times {row << "_"}
@@ -77,6 +89,8 @@ class Minesweeper
 
   def initial_display_board
     display_board = []
+    # REV: instead of deep_dup, a great one line method to make a board, then
+    # another board, is `board = Array.new(9) { Array.new(9) { '_' } }
     @board.deep_dup.each do |row|
       row.map! do |el|
         if el == "m"
@@ -105,6 +119,10 @@ class Minesweeper
   end
 
   def get_neighbors(x,y)
+    # REV: you could just do two nested loops:
+    # (x-1..x+1).each do
+    #   (y-1..y+1).each do
+    #     ....
     neighbors = [[x-1 , y-1],[x-1 , y], [x-1 , y+1],
                       [x , y-1],[x,y],[x , y+1],
                       [x+1 , y-1], [x+1 , y],[x+1 , y+1]]
