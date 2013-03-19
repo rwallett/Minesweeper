@@ -1,6 +1,10 @@
 require 'debugger'
 require 'yaml'
 
+# To load saved game. Load minesweeper.rb in irb/pry.
+# Then game = Minesweeper.load('save.yaml')
+# Then game.play
+
 class Minesweeper
   attr_reader :display_board, :board
   def initialize(size)
@@ -44,11 +48,15 @@ class Minesweeper
 
 
   def save_game
-    save = self.to_yaml
     File.open("save.yaml", "w") do |f|
-      f.puts save
+      f.puts self.to_yaml
     end
     puts "Game saved."
+  end
+
+  def Minesweeper.load(file_name)
+    File.open(file_name, "r"){ |file| YAML.load(file)}
+    p "Run .play to continue this game"
   end
 
 
@@ -137,16 +145,6 @@ class Minesweeper
 
 end
 
-class PlayMinesweeper
-  def initialize(command, size=:small, game_instance = nil)
-    if command == :new
-      Minesweeper.new(size)
-    elsif command == :load
-      YAML::load(game_instance)
-    end
-  end
-end
-
 class Array
   def deep_dup
     # THANKS, NED!
@@ -163,6 +161,6 @@ class Array
   end
 end
 
-mine = PlayMinesweeper.new(:new, :small)
+mine = Minesweeper.new(:small)
 
 
