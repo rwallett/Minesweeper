@@ -1,3 +1,4 @@
+#REV: Nicely done guys, just a few comments.
 require 'debugger'
 require 'yaml'
 
@@ -8,10 +9,10 @@ require 'yaml'
 class Minesweeper
   attr_reader :display_board, :board
   def initialize(size)
-    @board = make_board(size)
+    @board = make_board(size) #REV: Is there some reason you guys have @board and @display_board? Can't you get @display_board from @board?
     @display_board = initial_display_board
     @history = []
-    @start_time = Time.now
+    @start_time = Time.now #If you put start_time here and someone wants to load game, it includes the time from here until someone says they want to load game! Unfair!
     play
   end
 
@@ -43,7 +44,7 @@ class Minesweeper
     end
     p "Congrats you cleared the minefield."
     end_time = Time.now
-    p "It took you: #{end_time - @start_time} seconds"
+    p "It took you: #{end_time - @start_time} seconds" #REV: Should save this somewhere for high scores list?
   end
 
 
@@ -110,7 +111,7 @@ class Minesweeper
                       [x+1 , y-1], [x+1 , y],[x+1 , y+1]]
     neighbors.select! do |coord|
       # Find all possible moves from coordinates
-      (coord[0] >= 0 && coord[0] <= 8)  &&
+      (coord[0] >= 0 && coord[0] <= 8)  && #REV: If you hard code 8 for your boundaries this won't work if your board is larger!
       (coord[1] >= 0 && coord[1] <= 8)
     end
     neighbors
